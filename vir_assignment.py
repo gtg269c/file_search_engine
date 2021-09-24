@@ -78,14 +78,27 @@ class SearchPattern:
         self._file_list: List = []
 
         if self._single_file:
-            self._file_list = self._search_file(self._path)
-            print(f"Regex in file: {self._file_list}")
+            result = self._search_file(self._path)
+            if result:
+                self._file_list.append((self._path, result))
+                print(f"Regex in file: {self._path}")
+        elif self._recursive_search:
+            pass
 
-    def writer(self, output_file: Path) -> None:
+        # output file name
+        self.output_file = f"output_{self._regex}_search.txt"
+
+    def write_file(self, output_file: Path) -> None:
+        """method to write list of files with regex pattern
+
+        Args:
+            output_file (Path): output file name for regex search
+        """
 
         with open(output_file, "w") as write:
-            for val in self._file_list:
-                write.writelines(val)
+            for file, val in self._file_list:
+
+                write.writelines(f"{str(file)}, {val}")
 
     def _search_file(self, file_path: Path) -> List[str]:
         """method to look for regex in individual file
@@ -117,10 +130,11 @@ class SearchPattern:
 
 
 def main():
-    # parse input and initialize class
+    # parse input, initialize class and search file
     s = SearchPattern(sys.argv[1:])
 
-    # parse the file and write the search result
+    # write the list of file with pattern match
+    s.write_file(s.output_file)
 
     pass
 

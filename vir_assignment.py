@@ -71,8 +71,33 @@ def parse_args(argvs: List[str]) -> Tuple:
 #    pass
 
 class SearchPattern:
+    """the class perform search of individual file or all files within
+    a directory. It returns a list of files if the regex pattern is found
+    within its content or the file name. 
+
+    Output file: The output is written in the working directory with the 
+    <redex> pattern in the file name.
+
+    Limitations:
+        - Input files: need to be text files for the reader to iterate
+
+    """
 
     def __init__(self, args: List) -> None:
+        """the method initializes the class using inputs from the 
+        command line argument
+
+        - Parses the command line arguments and initializes the 
+            object attributes
+        - Assign values for file path, regex and boolion argument 
+            based on options
+        - If single file then it intiate the search of the file
+        - If recursive, then it searches for all the files in the 
+            directory and then the regex within all files
+
+        Args:
+            args (List): [description]
+        """
         self._args = args
         self._single_file, self._recursive_search, self._path, self._regex = parse_args(
             self._args)

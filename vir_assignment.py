@@ -91,11 +91,13 @@ class SearchPattern:
         Args:
             output_file (Path): output file name for regex search
         """
+        if len(self._file_search) > 0:
+            with open(output_file, "w") as write:
+                for file, val in self._file_search:
 
-        with open(output_file, "w") as write:
-            for file, val in self._file_search:
-
-                write.writelines(f"{str(file)}, {val}")
+                    write.writelines(f"{str(file)}, {val}\n")
+        else:
+            print(f"Sorry, couldn't find a file with the pattern")
 
     def _search_file(self, file_path: Path) -> None:
         """method to look for regex in individual file
@@ -118,6 +120,11 @@ class SearchPattern:
                     return
 
     def _search_recursively(self, file_path: Path) -> None:
+        """method to search regex recursively in a directory
+
+        Args:
+            file_path (Path): file path to directory of input files
+        """
         self._all_files = self._list_files(self._path)
         if len(self._all_files) > 0:
             print(
@@ -148,8 +155,6 @@ def main():
 
     # write the list of file with pattern match
     s.write_file(s.output_file)
-
-    pass
 
 
 if __name__ == '__main__':

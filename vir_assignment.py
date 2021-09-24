@@ -82,12 +82,8 @@ class SearchPattern:
 
         if self._single_file:
             self._search_file(self._path)
-            #result = self._search_file(self._path)
-            # if result:
-            #    self._file_search.append((self._path, result))
-            #    print(f"Regex in file: {self._path}")
         elif self._recursive_search:
-            self._recursive_search(self._path)
+            self._search_recursively(self._path)
 
     def write_file(self, output_file: Path) -> None:
         """method to write list of files with regex pattern
@@ -101,14 +97,12 @@ class SearchPattern:
 
                 write.writelines(f"{str(file)}, {val}")
 
-    def _search_file(self, file_path: Path) -> List[str]:
+    def _search_file(self, file_path: Path) -> None:
         """method to look for regex in individual file
 
         Args:
             file_path (Path): path of indiavidual file
 
-        Returns:
-            List[str]: returns True if pattern found, else false
         """
         # check pattern in file name
         if re.search(self._regex, file_path.name):
@@ -118,17 +112,34 @@ class SearchPattern:
 
         # check pattern in file content
         with open(file_path, mode='r') as input:
-            #line = input.readline
             for line in input:
                 if re.search(self._regex, line.strip()):
                     self._file_search.append((file_path, True))
                     return
 
-    def _search_recursively(self, file_path: Path) -> List[str]:
+    def _search_recursively(self, file_path: Path) -> None:
         self._all_files = self._list_files(self._path)
+        if len(self._all_files) > 0:
+            print(
+                f"Number of files in dir and sub-dir: {len(self._all_files)}")
+            # print(self._all_files)
+            for file in self._all_files:
+                self._search_file(file)
 
-    def _list_files(self, file_path: Path) -> List[str]:
-        pass
+        else:
+            print(f"No files detected in the directories")
+
+    def _list_files(self, file_path: Path) -> List[Path]:
+        """method searhes all files in a directory and returns a list
+
+        Args:
+            file_path (Path): file path for folder
+
+        Returns:
+            List[Path]: list of all files in file path
+        """
+        files = [file for file in file_path.iterdir() if file.is_file()]
+        return files
 
 
 def main():

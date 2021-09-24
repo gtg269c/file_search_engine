@@ -74,19 +74,20 @@ class SearchPattern:
         self._single_file, self._recursive_search, self._path, self._regex = parse_args(
             self._args)
 
-        # list of files with pattern
-        self._file_list: List = []
-
-        if self._single_file:
-            result = self._search_file(self._path)
-            if result:
-                self._file_list.append((self._path, result))
-                print(f"Regex in file: {self._path}")
-        elif self._recursive_search:
-            pass
-
         # output file name
         self.output_file = f"output_{self._regex}_search.txt"
+
+        # list of files with pattern
+        self._file_search: List = []
+
+        if self._single_file:
+            self._search_file(self._path)
+            #result = self._search_file(self._path)
+            # if result:
+            #    self._file_search.append((self._path, result))
+            #    print(f"Regex in file: {self._path}")
+        elif self._recursive_search:
+            self._recursive_search(self._path)
 
     def write_file(self, output_file: Path) -> None:
         """method to write list of files with regex pattern
@@ -96,7 +97,7 @@ class SearchPattern:
         """
 
         with open(output_file, "w") as write:
-            for file, val in self._file_list:
+            for file, val in self._file_search:
 
                 write.writelines(f"{str(file)}, {val}")
 
@@ -111,19 +112,20 @@ class SearchPattern:
         """
         # check pattern in file name
         if re.search(self._regex, file_path.name):
-            return True
+            self._file_search.append((file_path, True))
+            val = True
+            return
 
         # check pattern in file content
         with open(file_path, mode='r') as input:
             #line = input.readline
             for line in input:
                 if re.search(self._regex, line.strip()):
-                    return True
-
-        return False
+                    self._file_search.append((file_path, True))
+                    return
 
     def _search_recursively(self, file_path: Path) -> List[str]:
-        pass
+        self._all_files = self._list_files(self._path)
 
     def _list_files(self, file_path: Path) -> List[str]:
         pass

@@ -3,7 +3,10 @@ within a text file
 
 maintainer: Amin Momin (momin.amin@gmail.com)
 
-usage: python vir_assignment.py -c abc.txt a.b+
+usage: 
+    - for single file: python vir_assignment.py -c abc.txt a.b+
+    - for files within directory: python vir_assignment.py -r data\ johnson
+      
 """
 from pathlib import Path
 import sys
